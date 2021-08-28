@@ -10,8 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="task")
 public class Task {
 	
 	@Id
@@ -22,7 +24,7 @@ public class Task {
 	private Category category;
 	boolean isCompleted;
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="userid",nullable=false)
+	@JoinColumn(name="user_id",nullable=false)
 	private User user;
 	public int getId() {
 		return id;
@@ -53,6 +55,12 @@ public class Task {
 	}
 	public void setUser(User user) {
 		this.user = user;
+	}
+	public boolean isCompleted() {
+		return isCompleted;
+	}
+	public void setCompleted(boolean isCompleted) {
+		this.isCompleted = isCompleted;
 	}
 	
 }

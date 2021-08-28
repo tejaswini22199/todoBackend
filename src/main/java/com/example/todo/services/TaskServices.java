@@ -2,9 +2,13 @@ package com.example.todo.services;
 
 
 import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.example.todo.entities.Priority;
 import com.example.todo.entities.Task;
 
+@Component
 public interface TaskServices {
 	
 	Task addTask(Task task);

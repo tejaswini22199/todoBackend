@@ -23,7 +23,7 @@ public class UserController {
 	{
 		return userService.addUser(user);
 	}
-	@RequestMapping(value="/users",method=RequestMethod.DELETE)
+	@RequestMapping(value="/users/{id}",method=RequestMethod.DELETE)
 	void deleteUser(@PathVariable("id") int id)
 	{
 		userService.removeUser(id);

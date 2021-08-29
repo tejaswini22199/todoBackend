@@ -34,10 +34,22 @@ public class Task {
 	
 	private int isCompleted=0;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="user_id",nullable=false)
 	@JsonIgnore
 	private User user;
+	public Task() {
+		super();
+	}
+	public Task(int id, String taskName, Priority priority, Category category, int isCompleted, User user) {
+		super();
+		this.id = id;
+		this.taskName = taskName;
+		this.priority = priority;
+		this.category = category;
+		this.isCompleted = isCompleted;
+		this.user = user;
+	}
 	
 	public int getId() {
 		return id;
@@ -67,7 +79,17 @@ public class Task {
 		this.category = category;
 	}
 	public void setUser(User user) {
-		this.user = user;
+		if(sameAsOld(user))
+			return;
+		User Olduser=this.user;
+		if(Olduser!=null)
+			Olduser.removeTask(this);
+		if(user!=null)
+		user.addTask(this);
+	}
+	
+	private boolean sameAsOld(User newUser) {
+		return user==null? newUser==null : user.equals(newUser);
 	}
 	public int isCompleted() {
 		return isCompleted;

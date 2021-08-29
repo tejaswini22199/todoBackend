@@ -41,7 +41,7 @@ public class TaskController {
 		return list1;
 	}
 	@RequestMapping(value="/tasks",method=RequestMethod.POST)
-	Task addTask(@RequestBody Task task,@RequestParam("userId") int userId)
+	List<Task> addTask(@RequestBody Task task,@RequestParam("userId") int userId)
 	{
 		
 		return service.addTask(task,userId);

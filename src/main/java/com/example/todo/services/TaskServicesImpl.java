@@ -14,6 +14,8 @@ import com.example.todo.dao.UserDao;
 import com.example.todo.entities.Category;
 import com.example.todo.entities.Priority;
 import com.example.todo.entities.Task;
+import com.example.todo.entities.User;
+import com.example.todo.exceptions.userNotFoundException;
 
 
 @Service
@@ -25,18 +27,38 @@ public class TaskServicesImpl implements TaskServices {
 	@Autowired
 	private UserDao userDao;
 	@Override
-	public Task addTask(Task task,int userId) {
+	public List<Task> addTask(Task task,int userId) {
+		try {
+			if(userDao.existsById(userId)==false)
+				throw new userNotFoundException();
+			User user=userDao.getById(userId);
+			user.addTask(task);
+			return user.getTasks();
+		}
+		catch(userNotFoundException exception) {
+			
+		}
 		
-		Task addedTask=taskDao.save(task);
-		userDao.findById(userId).get().setTasks(taskDao.findAll());
-		return addedTask;
+		
 	}
-
+	@Override
+	public List<Task> getTasks(int userId) {
+		
+		return userDao.getById(userId).getTasks();
+		
+	}
+	private Task getTaskById(int id) {
+		return taskDao.getById(id);
+	}
 	@Override
 	public void removeTask(int id,int userId)
 	{
+		User user=userDao.getById(userId);
+		Task task=getTaskById(id);
+		user.removeTask(task);
+	
 		taskDao.deleteById(id);
-		userDao.findById(userId).get().setTasks(taskDao.findAll());
+		
 	}
 	@Override
 	public Task updateTask(int id,Task task,int userId) {
@@ -68,13 +90,7 @@ public class TaskServicesImpl implements TaskServices {
 	
 	}
 
-	@Override
-	public List<Task> getTasks(int userId) {
-		// TODO Auto-generated method stub
 	
-		return userDao.getById(userId).getTasks();
-		
-	}
 
 	@Override
 	public List<Task> getTasksofAPriority(Priority priority,int userId) {

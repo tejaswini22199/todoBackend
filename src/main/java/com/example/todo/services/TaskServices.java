@@ -9,7 +9,7 @@ import com.example.todo.entities.Task;
 
 public interface TaskServices {
 	
-	Task addTask(Task task,int userId);
+	List<Task> addTask(Task task,int userId);
 	void removeTask(int id,int userId);
 	Task updateTask(int id,Task task,int userId);
 	Task getTaskbyId(int id);

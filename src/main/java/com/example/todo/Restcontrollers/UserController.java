@@ -1,5 +1,7 @@
 package com.example.todo.Restcontrollers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,5 +27,10 @@ public class UserController {
 	void deleteUser(@PathVariable("id") int id)
 	{
 		userService.removeUser(id);
+	}
+	@RequestMapping(value="/users", method=RequestMethod.GET)
+	List<User> getUsers()
+	{
+		return userService.getUsers();
 	}
 }

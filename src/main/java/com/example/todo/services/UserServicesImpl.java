@@ -2,14 +2,15 @@ package com.example.todo.services;
 
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.todo.dao.UserDao;
 import com.example.todo.entities.User;
 
-import antlr.collections.List;
-
+@Service
 public class UserServicesImpl implements UserServices {
 
 	@Autowired
@@ -31,13 +32,17 @@ public class UserServicesImpl implements UserServices {
 		return userDao.findAll().stream().anyMatch(currentUser-> currentUser.equals(user));
 
 	}
-
+	
 	@Override
 	public boolean validateUser(User user) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	
+	@Override
+	public List<User> getUsers()
+	{
+		return userDao.findAll();
+	}
 
 }

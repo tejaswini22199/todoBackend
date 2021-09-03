@@ -4,20 +4,27 @@ package com.example.todo.services;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.todo.dao.UserDao;
 import com.example.todo.entities.User;
 
+
 @Service
 public class UserServicesImpl implements UserServices {
-
+	
+	Logger LOG=LoggerFactory.getLogger(UserServicesImpl.class);
 	@Autowired
 	private UserDao userDao;
+	
 	@Override
 	public User addUser(User user) {
-		return userDao.save(user);
+		LOG.info("The count of users,{}", userDao.count());
+	
+		return userDao.save(new User(user));
 		
 	}
 

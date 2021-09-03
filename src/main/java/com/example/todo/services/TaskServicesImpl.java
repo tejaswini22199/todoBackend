@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.example.todo.dao.TaskDao;
 import com.example.todo.dao.UserDao;
+
 import com.example.todo.entities.Category;
 import com.example.todo.entities.Priority;
 import com.example.todo.entities.Task;
 import com.example.todo.entities.User;
-import com.example.todo.exceptions.userNotFoundException;
+
+import com.example.todo.exceptions.ResourceNotFoundException;
 
 
 @Service
@@ -26,37 +28,56 @@ public class TaskServicesImpl implements TaskServices {
 	private TaskDao taskDao;
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private UserServices userService;
+	
 	@Override
 	public List<Task> addTask(Task task,int userId) {
-		try {
-			if(userDao.existsById(userId)==false)
-				throw new userNotFoundException();
-			User user=userDao.getById(userId);
-			user.addTask(task);
-			return user.getTasks();
-		}
-		catch(userNotFoundException exception) {
-			
-		}
-		
-		
+	
+		LOG.info("user was present");
+		User user=getUserById(userId);
+		LOG.info(user+"this is the user");
+		user.addTask(new Task(task));
+	//	taskDao.save(task);
+		LOG.info(user.toString());
+		LOG.info("task added after");
+		return user.getTasks();
 	}
+	
 	@Override
 	public List<Task> getTasks(int userId) {
 		
-		return userDao.getById(userId).getTasks();
+		User user=getUserById(userId);
+		LOG.info(user.toString());
+		return user.getTasks();
+		
+	
 		
 	}
+	
+	private User getUserById(int userId) {
+		if(userDao.existsById(userId)==false)
+			throw new ResourceNotFoundException("User doesn't exist");
+		User user=userDao.getById(userId);
+		return user;
+	}
+	
 	private Task getTaskById(int id) {
+		if(taskDao.getById(id)==null) {
+			throw new ResourceNotFoundException("Task doesn't exist");
+		}
 		return taskDao.getById(id);
 	}
 	@Override
 	public void removeTask(int id,int userId)
 	{
-		User user=userDao.getById(userId);
+		
+		User user=getUserById(userId);
 		Task task=getTaskById(id);
+		if(!user.getTasks().contains(task)) {
+			throw new ResourceNotFoundException("Task doesn't exist in User");
+		}
 		user.removeTask(task);
-	
 		taskDao.deleteById(id);
 		
 	}
@@ -110,7 +131,6 @@ public class TaskServicesImpl implements TaskServices {
 
 	@Override
 	public List<Task> getInCompleteTasks(int userId) {
-		// TODO Auto-generated method stub
 		List<Task> inCompleteTasks=getTasks(userId);
 		inCompleteTasks.stream().filter(task->task.isCompleted()==0)
 		.collect(Collectors.toList());

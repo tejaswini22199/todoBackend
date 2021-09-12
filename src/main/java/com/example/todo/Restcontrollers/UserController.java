@@ -15,22 +15,36 @@ import com.example.todo.services.UserServices;
 @RestController
 @RequestMapping("/api")
 public class UserController {
+	
 	@Autowired
 	private UserServices userService;
 	
-	@RequestMapping(value="/register", method=RequestMethod.POST)
-	User register(@RequestBody User user)
-	{
+	@Autowired
+	public UserController(UserServices userService) {
+		super();
+		this.userService = userService;
+	}
+	
+	@RequestMapping(value="/add",method=RequestMethod.POST)
+	User save(@RequestBody User user) {
 		return userService.addUser(user);
+	}
+	
+	@RequestMapping(value="/users/{id}",method=RequestMethod.GET)
+	User getUser(@PathVariable("id") int id)
+	{
+		return userService.getUser(id);
+	}
+	
+	@RequestMapping(value="/users", method=RequestMethod.GET)
+	List<User> getUsers()
+	{
+		return userService.getUsers();
 	}
 	@RequestMapping(value="/users/{id}",method=RequestMethod.DELETE)
 	void deleteUser(@PathVariable("id") int id)
 	{
 		userService.removeUser(id);
 	}
-	@RequestMapping(value="/users", method=RequestMethod.GET)
-	List<User> getUsers()
-	{
-		return userService.getUsers();
-	}
+	
 }

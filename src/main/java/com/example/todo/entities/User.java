@@ -1,7 +1,9 @@
 package com.example.todo.entities;
 
+//import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Id;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,18 +11,20 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+//import javax.validation.constraints.NotBlank;
+//import javax.validation.constraints.NotEmpty;
+//import javax.validation.constraints.Size;
+
+//import org.hibernate.annotations.BatchSize;
+//import org.hibernate.annotations.Fetch;
+//import org.hibernate.annotations.FetchMode;
 @Entity
 public class User {
 	
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private int Id;
 	
 	@NotEmpty(message="user name can't be empty")
@@ -31,7 +35,7 @@ public class User {
 	@Size(max=25)
 	private String email;
 	
-	
+	@NotEmpty(message="password cant be empty")
 	@Size(max=25)
 	private String password;
 	@OneToMany(
@@ -40,9 +44,9 @@ public class User {
 			mappedBy="user",
 			orphanRemoval=true
 			)
-	@Fetch(FetchMode.SELECT)
-	@BatchSize(size=30)
 	private List<Task> tasks=new ArrayList<Task>();
+////	private Instant createdAt;
+//	private boolean isenabled;
 	public User() {
 		super();
 	}
@@ -86,20 +90,38 @@ public class User {
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
-	public void addTask(Task task)
-	{
-		if(tasks.contains(task))
-			return;
-
-		tasks.add(task);
-		task.setUser(this);
+	public int getId() {
+		return Id;
 	}
-	public void removeTask(Task task) {
-		if(!tasks.contains(task))
-			return;
-		tasks.remove(task);
-		task.setUser(null);
+	public void setId(int id) {
+		Id = id;
 	}
+//	public Instant getCreatedAt() {
+//		return createdAt;
+//	}
+//	public void setCreatedAt(Instant createdAt) {
+//		this.createdAt = createdAt;
+//	}
+//	public boolean isIsenabled() {
+//		return isenabled;
+//	}
+//	public void setIsenabled(boolean isenabled) {
+//		this.isenabled = isenabled;
+//	}
+//	public void addTask(Task task)
+//	{
+//		if(tasks.contains(task))
+//			return;
+//
+//		tasks.add(task);
+//		task.setUser(this);
+//	}
+//	public void removeTask(Task task) {
+//		if(!tasks.contains(task))
+//			return;
+//		tasks.remove(task);
+//		task.setUser(null);
+//	}
 	@Override
 	public String toString() {
 		return "User [Id=" + Id + ", name=" + name + ", email=" + email + ", password=" + password + ", tasks=" + tasks

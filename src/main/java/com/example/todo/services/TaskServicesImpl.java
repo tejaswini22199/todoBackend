@@ -28,20 +28,12 @@ public class TaskServicesImpl implements TaskServices {
 	private TaskDao taskDao;
 	@Autowired
 	private UserDao userDao;
-	@Autowired
-	private UserServices userService;
+	
 	
 	@Override
-	public List<Task> addTask(Task task,int userId) {
+	public Task addTask(Task task) {
 	
-		LOG.info("user was present");
-		User user=getUserById(userId);
-		LOG.info(user+"this is the user");
-		user.addTask(new Task(task));
-	//	taskDao.save(task);
-		LOG.info(user.toString());
-		LOG.info("task added after");
-		return user.getTasks();
+		return taskDao.save(task);
 	}
 	
 	@Override
@@ -51,11 +43,10 @@ public class TaskServicesImpl implements TaskServices {
 		LOG.info(user.toString());
 		return user.getTasks();
 		
-	
-		
 	}
 	
 	private User getUserById(int userId) {
+		
 		if(userDao.existsById(userId)==false)
 			throw new ResourceNotFoundException("User doesn't exist");
 		User user=userDao.getById(userId);
@@ -63,45 +54,21 @@ public class TaskServicesImpl implements TaskServices {
 	}
 	
 	private Task getTaskById(int id) {
+		
 		if(taskDao.getById(id)==null) {
 			throw new ResourceNotFoundException("Task doesn't exist");
 		}
 		return taskDao.getById(id);
 	}
 	@Override
-	public void removeTask(int id,int userId)
+	public void removeTask(int id)
 	{
-		
-		User user=getUserById(userId);
-		Task task=getTaskById(id);
-		if(!user.getTasks().contains(task)) {
-			throw new ResourceNotFoundException("Task doesn't exist in User");
-		}
-		user.removeTask(task);
 		taskDao.deleteById(id);
 		
 	}
 	@Override
-	public Task updateTask(int id,Task task,int userId) {
-		List<Task> tasks= userDao.findById(userId).get().getTasks();
-		Task updatedTask=tasks.stream().filter(userTask->userTask.getId()==id)
-				.collect(Collectors.toList()).get(0);
-		if(!task.getCategory().equals(updatedTask.getCategory()))
-			updatedTask.setCategory(task.getCategory());
-		if(!task.getPriority().equals(updatedTask.getPriority()))
-				updatedTask.setPriority(task.getPriority());
-		if(!task.getTaskName().equals(updatedTask.getTaskName()))
-				updatedTask.setTaskName(task.getTaskName());
-		Task updatedTask1=taskDao.getById(id);
-		if(!task.getCategory().equals(updatedTask1.getCategory()))
-			updatedTask1.setCategory(task.getCategory());
-		if(!task.getPriority().equals(updatedTask1.getPriority()))
-				updatedTask1.setPriority(task.getPriority());
-		if(!task.getTaskName().equals(updatedTask1.getTaskName()))
-				updatedTask1.setTaskName(task.getTaskName());
-		tasks.add(id, updatedTask);
-		userDao.findById(userId).get().setTasks(tasks);
-		return updatedTask;
+	public Task updateTask(Task task) {
+		return taskDao.save(task);
 	}
 
 	@Override
@@ -138,9 +105,10 @@ public class TaskServicesImpl implements TaskServices {
 	}
 
 	@Override
-	public void markTaskComplete(int id,int userId,int markComp) {
-		LOG.info(markComp+"value");
-		taskDao.getById(id).setCompleted(markComp);
+	public void markTaskComplete(int id) {
+		Task task=getTaskbyId(id);
+		task.setCompleted(1-task.isCompleted());
+		taskDao.save(task);
 //		Task task=(Task)userDao.findById(userId).get().getTasks().stream().filter(userTask->userTask.getId()==id);
 //		task.setCompleted(markComp);
 	}

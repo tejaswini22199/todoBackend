@@ -27,6 +27,11 @@ public class UserServicesImpl implements UserServices {
 		return userDao.save(new User(user));
 		
 	}
+	
+	@Override
+	public User getUser(int id) {
+		return userDao.getById(id);
+	}
 
 	@Override
 	public void removeUser(int id) {

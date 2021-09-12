@@ -2,6 +2,8 @@ package com.example.todo.entities;
 
 
 
+//
+//import java.time.Instant;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,9 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Task {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
 	
 	private String taskName;
 	
@@ -34,36 +34,14 @@ public class Task {
 	@Enumerated(EnumType.STRING)
 	private Category category;
 	
+	
 	private int isCompleted=0;
 	
 	@ManyToOne(fetch=FetchType.LAZY,optional=false)
 	@JoinColumn(name="user_id",nullable=false)
 	@JsonIgnore
 	private User user;
-	
-	public Task() {
-		super();
-	}
-	public Task(Task task) {
-		super();
-		this.id=task.id;
-		this.taskName=task.getTaskName();
-		this.priority=task.getPriority();
-		this.isCompleted=task.isCompleted();
-		this.user=task.getUser();
-				
-	}
-	public Task(int id, String taskName, Priority priority, Category category, int isCompleted, User user) {
-		super();
-		this.id = id;
-		this.taskName = taskName;
-		this.priority = priority;
-		this.category = category;
-		this.isCompleted = isCompleted;
-		this.user = user;
-	}
-	
-	
+	//private Instant createdAt;
 	public int getId() {
 		return id;
 	}
@@ -113,5 +91,11 @@ public class Task {
 	public void setCompleted(int isCompleted) {
 		this.isCompleted = isCompleted;
 	}
+//	public Instant getCreatedAt() {
+//		return createdAt;
+//	}
+//	public void setCreatedAt(Instant createdAt) {
+//		this.createdAt = createdAt;
+//	}
 	
 }
